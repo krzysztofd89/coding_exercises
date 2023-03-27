@@ -17,11 +17,12 @@ class LinkedList:
             first_node, *nodes = nodes
             node = Node(first_node)
             self.head = node
-            self.tail = node
             self.length += 1
-
             for data in nodes:
-                self.append(data)
+                node.next = Node(data)
+                node = node.next
+                self.length += 1
+            self.tail = node
 
     def __repr__(self):
         node = self.head
