@@ -4,30 +4,39 @@ class Node:
         self.next = None
 
     def __repr__(self):
-        return f'Node({self.data}, {self.next.data})'
+        return f"Node({self.data or 'None'}, {self.next.data or 'None'})"
 
 
 class LinkedList:
-    def __init__(self, nodes=None):
+    def __init__(self, nodes):
         self.head = None
         self.tail = self.head
         self.length = 0
 
-        if nodes is not None:
-            first_node, *nodes = nodes
-            node = Node(first_node)
-            self.head = node
-            self.tail = node
-            self.length += 1
+        first_node, *nodes = nodes
+        node = Node(first_node)
+        self.head = node
+        self.tail = node
+        self.length += 1
 
-            for data in nodes:
-                self.append(data)
+        for data in nodes:
+            self.append(data)
 
-    def __repr__(self):
+    def __str__(self):
         node = self.head
         nodes = []
         while node is not None:
             nodes.append(node.data)
+            node = node.next
+        return '->'.join(nodes)
+
+    def __repr__(self):
+        print('__repr__ called')
+        node = self.head
+        nodes = []
+        while node.next is not None:
+            print(node)
+            nodes.append(str(node))
             node = node.next
         return '->'.join(nodes)
 
@@ -72,9 +81,8 @@ class LinkedList:
             self.length -= 1
 
     def reverse(self):
-        nodes = LinkedList()
         node = self.head
-        nodes.prepend(node.data)
+        nodes = LinkedList(node.data)
         while node.next:
             node = node.next
             nodes.prepend(node.data)
@@ -93,3 +101,4 @@ print(llist)
 llist.remove(2)
 print(llist)
 print(llist.reverse())
+repr(llist)
