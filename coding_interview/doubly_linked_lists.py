@@ -1,34 +1,44 @@
 class Node:
     def __init__(self, data):
         self.data = data
+        self.prev = None
         self.next = None
 
     def __repr__(self):
-        return f'Node({self.data}, {self.next.data})'
+        _prev = self.prev.data if self.prev else 'None'
+        _next = self.next.data if self.next else 'None'
+        return f"Node({_prev}, {self.data}, {_next})"
 
 
-class LinkedList:
+class DoublyLinkedList:
     def __init__(self, nodes=None):
         self.head = None
         self.tail = self.head
         self.length = 0
 
-        if nodes is not None:
-            first_node, *nodes = nodes
-            node = Node(first_node)
-            self.head = node
-            self.length += 1
-            for data in nodes:
-                node.next = Node(data)
-                node = node.next
-                self.length += 1
-            self.tail = node
+        first_node, *nodes = nodes
+        node = Node(first_node)
+        self.head = node
+        self.tail = node
+        self.length += 1
 
-    def __repr__(self):
+        for data in nodes:
+            self.append(data)
+
+    def __str__(self):
         node = self.head
         nodes = []
         while node is not None:
             nodes.append(node.data)
+            node = node.next
+        return '->'.join(nodes)
+
+    def __repr__(self):
+        print('__repr__ called')
+        node = self.head
+        nodes = []
+        while node:
+            nodes.append(str(node))
             node = node.next
         return '->'.join(nodes)
 
@@ -43,6 +53,7 @@ class LinkedList:
 
     def append(self, data):
         node = Node(data)
+        node.prev = self.tail
         self.tail.next = node
         self.tail = node
         self.length += 1
@@ -50,6 +61,7 @@ class LinkedList:
     def prepend(self, data):
         node = Node(data)
         node.next = self.head
+        self.head.prev = node
         self.head = node
         self.length += 1
 
@@ -59,9 +71,14 @@ class LinkedList:
             self.append(data)
         else:
             leader = self.traverse_to_index(index-1)
+            follower = leader.next
+
             new_node = Node(data)
-            new_node.next = leader.next
+            new_node.next = follower
+            new_node.prev = leader
+
             leader.next = new_node
+            follower.prev = new_node
         self.length += 1
 
     def remove(self, index):
@@ -69,20 +86,23 @@ class LinkedList:
         if index <= self.length:
             leader = self.traverse_to_index(index-1)
             node_to_remove = leader.next
-            leader.next = node_to_remove.next
+            follower = node_to_remove.next
+
+            leader.next = follower
+            follower.prev = leader
+
             self.length -= 1
 
     def reverse(self):
-        nodes = LinkedList()
         node = self.head
-        nodes.prepend(node.data)
+        nodes = DoublyLinkedList(node.data)
         while node.next:
             node = node.next
             nodes.prepend(node.data)
         return nodes
 
 
-llist = LinkedList(['a', 'b', 'c', 'd'])
+llist = DoublyLinkedList(['a', 'b', 'c', 'd'])
 print(llist)
 llist.prepend('z')
 print(llist)
