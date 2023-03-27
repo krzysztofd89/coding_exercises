@@ -3,6 +3,9 @@ class Node:
         self.data = data
         self.next = None
 
+    def __repr__(self):
+        return f'Node({self.data}, {self.next.data})'
+
 
 class LinkedList:
     def __init__(self, nodes=None):
@@ -29,6 +32,15 @@ class LinkedList:
             node = node.next
         return '->'.join(nodes)
 
+    def traverse_to_index(self, index):
+        counter = 0
+        current_node = self.head
+
+        while counter != index:
+            current_node = current_node.next
+            counter += 1
+        return current_node
+
     def append(self, data):
         node = Node(data)
         self.tail.next = node
@@ -41,11 +53,24 @@ class LinkedList:
         self.head = node
         self.length += 1
 
-    def insert(self):
-        pass
+    def insert(self, index, data):
+        print(f'Inserting {data} at index {index}')
+        if index >= self.length:
+            self.append(data)
+        else:
+            leader = self.traverse_to_index(index-1)
+            new_node = Node(data)
+            new_node.next = leader.next
+            leader.next = new_node
+        self.length += 1
 
-    def remove(self):
-        pass
+    def remove(self, index):
+        print(f'Removing node at index {index}')
+        if index <= self.length:
+            leader = self.traverse_to_index(index-1)
+            node_to_remove = leader.next
+            leader.next = node_to_remove.next
+            self.length -= 1
 
     def reverse(self):
         nodes = LinkedList()
@@ -62,5 +87,10 @@ print(llist)
 llist.prepend('z')
 print(llist)
 llist.append('yy')
+print(llist)
+print(llist.traverse_to_index(3))
+llist.insert(3, 'dd')
+print(llist)
+llist.remove(2)
 print(llist)
 print(llist.reverse())
